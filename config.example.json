@@ -1,0 +1,11 @@
+{
+    "twitch_auth":{
+        "client_id" : "",
+        "client_secret":"",
+        "scope": "chat:read channel:read:redemptions",
+        "redirect_uri":"http://localhost:3000",
+        "channels":[""]
+    },
+    "https":{ "use_https": false },
+    "ws":{ "port":9001 }
+}
