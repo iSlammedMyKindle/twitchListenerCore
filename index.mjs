@@ -90,7 +90,7 @@ wsServer.on("connection", ws=>{
     ws.on('close', ()=>{
         //Remove all listeners associated with this connection
         const existingConnections = connections.get(ws);
-        for(const i in existingConnections) twitchEmitter.off(existingConnections[i]);
+        for(const i in existingConnections) twitchEmitter.off(i, existingConnections[i]);
 
         //Delete this webSocket connection from the list
         connections.delete(ws);
