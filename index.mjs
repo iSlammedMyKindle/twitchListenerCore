@@ -70,21 +70,39 @@ wsServer.on("connection", ws=>{
             console.warn('Received empty message from ws client...?');
             return;
         }
-        const listOfListeners = JSON.parse(m.toString());
-        const accepted = [];
-        const rejected = [];
-        for(const listener of listOfListeners){
-            if(listeners[listener]){
-                let newListener = evt=>listeners[listener](evt, ws);
-    
-                connections.get(ws)[listener] = newListener;
-                twitchEmitter.on(listener, newListener);
-                accepted.push(listener);
-            }
-            else rejected.push(listener);
-        }
 
-        ws.send(JSON.stringify({ accepted, rejected }));
+        const resJson = JSON.parse(m.toString());
+
+        if(Array.isArray(resJson)){
+            const accepted = [];
+            const rejected = [];
+            for(const listener of resJson){
+                if(listeners[listener]){
+                    let newListener = evt=>listeners[listener](evt, ws);
+        
+                    connections.get(ws)[listener] = newListener;
+                    twitchEmitter.on(listener, newListener);
+                    accepted.push(listener);
+                }
+                else rejected.push(listener);
+            }
+    
+            ws.send(JSON.stringify({ accepted, rejected }));
+        }
+        else{
+            // This is an object; it probably has a thing
+            // Not scalable by any means - if I want to perform more actions than this, it would definitely be worth putting these into functions
+            if(resJson.action == 'message'){
+                //Say something back in the twitch channel
+                chatClient.say(config.twitch_auth.channels[0], resJson.text).then(e=>{
+                    console.log('did the the thing', e);
+                }, e=>{
+                    console.error('Failed the thing -_-', e);
+                });
+
+                console.log(config.twitch_auth.channels[0] + ":", resJson.text);
+            }
+        }
     });
 
     ws.on('close', ()=>{

@@ -8,6 +8,7 @@ wsClient.on('open', ()=>{
 //    wsClient.send('!@#$');
 
     wsClient.send(JSON.stringify(['message', 'redeem', 'chicken salad']));
+    wsClient.send(JSON.stringify({action:"message", text:"This is a cool message! salutations!"}));
 });
 
 wsClient.on('message', buffer=>{
