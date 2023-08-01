@@ -122,9 +122,9 @@ wsServer.on("connection", ws=>{
 const authProvider = new RefreshingAuthProvider({
     clientId: config.twitch_auth.client_id,
     clientSecret: config.twitch_auth.client_secret,
-    onRefresh: newTokenData=>{
+    onRefresh: async newTokenData=>{
         tokenData = newTokenData;
-        fs.writeFile('./tokens.json', JSON.stringify(newTokenData), 'utf-8', ()=>{});
+        return await fs.writeFile('./tokens.json', JSON.stringify(newTokenData), 'utf-8', ()=>{});
     }
 });
 
@@ -138,7 +138,7 @@ authProvider.addUser((await (getTokenInfo(tokenData.accessToken, config.twitch_a
 //Messages client - for every message in chat, ping it back to the events
 const chatClient = new ChatClient({ authProvider, channels:config.twitch_auth.channels });
 chatClient.onMessage((channel, user, text, msg)=>{
-    console.log('==Message==', channel, user, text, msg);
+    console.log('==Message==', channel, user, text);
     twitchEmitter.emit('message', { channel, user, text });
 });
 
