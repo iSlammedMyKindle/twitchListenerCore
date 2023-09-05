@@ -7,8 +7,8 @@ import { ApiClient } from "@twurple/api";
 import { RefreshingAuthProvider, getTokenInfo } from "@twurple/auth";
 import { WebSocketServer } from "ws";
 import { EventEmitter } from "node:events";
-import { PubSubClient } from "@twurple/pubsub";
 import { ChatClient } from "@twurple/chat";
+import { EventSubWsListener } from "@twurple/eventsub-ws";
 import fs from 'fs';
 
 /*Client connections - store these here to remove listeners that arne't required anymore upon disconnect
@@ -93,11 +93,13 @@ wsServer.on("connection", ws=>{
             // This is an object; it probably has a thing
             // Not scalable by any means - if I want to perform more actions than this, it would definitely be worth putting these into functions
             if(resJson.action == 'message'){
-                //Say something back in the twitch channel
-                chatClient.say(config.twitch_auth.channels[0], resJson.text).then(e=>{
-                    console.log('did the the thing', e);
+                /*Say something back in the twitch channel, it's not documented, but you can use a message ID to reply back to a message (replyTo).
+                The other method is a message object, which doesn't make sense with this core atm.*/
+                const msgParams = [config.twitch_auth.channels[0], resJson.text, {replyTo:resJson.replyTo}];
+                chatClient.say(...msgParams).then(e=>{
+                    console.log('client:', ...msgParams);
                 }, e=>{
-                    console.error('Failed the thing -_-', e);
+                    console.error('Failed to send client message -_-', e);
                 });
 
                 console.log(config.twitch_auth.channels[0] + ":", resJson.text);
@@ -118,11 +120,10 @@ wsServer.on("connection", ws=>{
 
 // https://twurple.js.org/reference/pubsub/classes/BasicPubSubClient.html#listen
 // For each thing you're listening to, you'll need to place your token inside the .listen function
-
 const authProvider = new RefreshingAuthProvider({
     clientId: config.twitch_auth.client_id,
     clientSecret: config.twitch_auth.client_secret,
-    onRefresh: async newTokenData=>{
+    onRefresh: async (userId, newTokenData)=>{
         tokenData = newTokenData;
         return await fs.writeFile('./tokens.json', JSON.stringify(newTokenData), 'utf-8', ()=>{});
     }
@@ -139,17 +140,23 @@ authProvider.addUser((await (getTokenInfo(tokenData.accessToken, config.twitch_a
 const chatClient = new ChatClient({ authProvider, channels:config.twitch_auth.channels });
 chatClient.onMessage((channel, user, text, msg)=>{
     console.log('==Message==', channel, user, text);
-    twitchEmitter.emit('message', { channel, user, text });
+    twitchEmitter.emit('message', { channel, user, text, id:msg.id });
 });
 
-chatClient.connect().then(()=>console.log("Chat client is connected!"));
+chatClient.connect();
 
-//Channel points (pubSub)
-//THIS AUTHPROVIDER PARAMETER WAS FREAKEN UNDOCUMENTED ...oof
-const pubSub = new PubSubClient({ authProvider });
+// EventSub
+// Channel points
 const targetChannel = await apiClient.users.getUserByName(config.twitch_auth.channels[0]);
 
-pubSub.onRedemption(targetChannel.id, evt=>{
-    console.log('==Redeem==', evt);
-    twitchEmitter.emit('redeem', evt);
+const evtSub = new EventSubWsListener({ apiClient });
+
+// https://twurple.js.org/reference/eventsub-base/classes/EventSubChannelRedemptionAddEvent.html
+evtSub.onChannelRedemptionAdd(targetChannel.id, function({rewardTitle, rewardCost, userName, userDisplayName}){
+    console.log('==Redeem==', rewardTitle, rewardCost, userName, userDisplayName);
+    twitchEmitter.emit('redeem', arguments[0]);
 });
+
+evtSub.start();
+
+console.log("Everything connected!");
