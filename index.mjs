@@ -6,9 +6,10 @@ import { authenticateTwitch } from "kindle-twitch-oauth";
 import { ApiClient } from "@twurple/api";
 import { RefreshingAuthProvider, getTokenInfo } from "@twurple/auth";
 import { WebSocketServer } from "ws";
-import { EventEmitter } from "node:events";
 import { ChatClient } from "@twurple/chat";
 import { EventSubWsListener } from "@twurple/eventsub-ws";
+import evtSubList from "./listeners.mjs";
+import twitchEmitter from "./twitchEmitter.mjs";
 import fs from 'fs';
 
 /*Client connections - store these here to remove listeners that arne't required anymore upon disconnect
@@ -20,11 +21,11 @@ import fs from 'fs';
 }
 */
 const connections = new Map();
-const twitchEmitter = new EventEmitter();
 
 const listeners = {
     'message': (evt, targetWs)=>targetWs.send(JSON.stringify(evt)),
     'redeem': (evt, targetWs)=>targetWs.send(JSON.stringify({title:evt.rewardTitle, userName: evt.userName, displayName:evt.userDisplayName, rewardCost: evt.rewardCost})),
+    'cheer': (evt, targetWs)=>targetWs.send(JSON.stringify({ userDisplayName: evt.userDisplayName, userName: evt.userName, bits: evt.bits, message: evt.message}))
 }
 
 // Either I'm confused or promises for reading the file isn't working like in twitchToDiscord
@@ -151,11 +152,9 @@ const targetChannel = await apiClient.users.getUserByName(config.twitch_auth.cha
 
 const evtSub = new EventSubWsListener({ apiClient });
 
-// https://twurple.js.org/reference/eventsub-base/classes/EventSubChannelRedemptionAddEvent.html
-evtSub.onChannelRedemptionAdd(targetChannel.id, function({rewardTitle, rewardCost, userName, userDisplayName}){
-    console.log('==Redeem==', rewardTitle, rewardCost, userName, userDisplayName);
-    twitchEmitter.emit('redeem', arguments[0]);
-});
+// Load the listeners for EventSub:
+for(var key in evtSubList)
+    evtSub["on"+key](targetChannel.id, evtSubList[key]);
 
 evtSub.start();
 
