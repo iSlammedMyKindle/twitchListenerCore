@@ -11,9 +11,15 @@ const evtSubList = {
         twitchEmitter.emit('redeem', arguments[0]);
     },
     
-    ChannelCheer:function(){
+    ChannelCheer:function({bits, userName, userDisplayName, broadcasterName, message}){
+        console.log('==Cheer==', bits, userName, userDisplayName, broadcasterName, message);
         twitchEmitter.emit('cheer', arguments[0]);
     }
 };
 
-export default evtSubList
+const twitchMsg = (channel, user, text, msg)=>{
+    console.log('==Message==', channel, user, text);
+    twitchEmitter.emit('message', { channel, user, text, id:msg.id });
+}
+
+export {evtSubList, twitchMsg}
