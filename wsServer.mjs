@@ -12,11 +12,8 @@ import config from "./configExport.mjs";
 */
 const connections = new Map();
 
-const listeners = {
-    'message': (evt, targetWs)=>targetWs.send(JSON.stringify(evt)),
-    'redeem': (evt, targetWs)=>targetWs.send(JSON.stringify({title:evt.rewardTitle, userName: evt.userName, displayName:evt.userDisplayName, rewardCost: evt.rewardCost})),
-    'cheer': (evt, targetWs)=>targetWs.send(JSON.stringify({ userDisplayName: evt.userDisplayName, userName: evt.userName, broadcasterName: evt.broadcasterName, bits: evt.bits, message: evt.message}))
-}
+const listeners = ['message', 'redeem', 'cheer'];
+const eventSend = (evtObj, targetWs)=>targetWs.send(JSON.stringify(evtObj));
 
 const clientMsg = (ws, m)=>{
     if(!m.toString()){
@@ -30,8 +27,8 @@ const clientMsg = (ws, m)=>{
         const accepted = [];
         const rejected = [];
         for(const listener of resJson){
-            if(listeners[listener]){
-                let newListener = evt=>listeners[listener](evt, ws);
+            if(listeners.indexOf(listener) > -1){
+                let newListener = evt=>eventSend(evt, ws);
     
                 connections.get(ws)[listener] = newListener;
                 twitchEmitter.on(listener, newListener);
