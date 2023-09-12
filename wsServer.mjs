@@ -1,6 +1,6 @@
 import { WebSocketServer } from "ws";
 import twitchEmitter from "./twitchEmitter.mjs";
-import config from "./configExport.mjs";
+import { twitchConfig as config } from "./configExport.mjs";
 
 /*Client connections - store these here to remove listeners that arne't required anymore upon disconnect
 {
@@ -12,6 +12,7 @@ import config from "./configExport.mjs";
 */
 const connections = new Map();
 
+// TODO: get rid of this and replace it with the list of listeners from the config to make this dynamic
 const listeners = ['message', 'redeem', 'cheer'];
 const eventSend = (evtObj, targetWs)=>targetWs.send(JSON.stringify(evtObj));
 
@@ -45,12 +46,7 @@ const clientMsg = (ws, m)=>{
         if(resJson.action == 'message'){
             /*Say something back in the twitch channel, it's not documented, but you can use a message ID to reply back to a message (replyTo).
             The other method is a message object, which doesn't make sense with this core atm.*/
-            const msgParams = [config.twitch_auth.channels[0], resJson.text, {replyTo:resJson.replyTo}];
-            chatClient.say(...msgParams).then(e=>{
-                console.log('client:', ...msgParams);
-            }, e=>{
-                console.error('Failed to send client message -_-', e);
-            });
+            twitchEmitter.emit('clientmsg', config.twitch_auth.channels[0], resJson.text, {replyTo:resJson.replyTo});
 
             console.log(config.twitch_auth.channels[0] + ":", resJson.text);
         }

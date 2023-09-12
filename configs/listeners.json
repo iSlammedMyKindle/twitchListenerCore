@@ -1,0 +1,4 @@
+{
+    "redeem": { "apiName":"ChannelRedemptionAdd", "params":["rewardTitle", "rewardCost", "userName", "userDisplayName"] },
+    "cheer": { "apiName":"ChannelCheer", "params":["bits", "userName", "userDisplayName", "broadcasterName", "message"] }
+}

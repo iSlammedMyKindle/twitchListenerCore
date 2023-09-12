@@ -9,7 +9,8 @@ import { ChatClient } from "@twurple/chat";
 import { EventSubWsListener } from "@twurple/eventsub-ws";
 import { evtSubList, twitchMsg } from "./listeners.mjs";
 import { readFile, writeFile, access } from "fs/promises";
-import config from "./configExport.mjs";
+import { twitchConfig as config } from "./configExport.mjs";
+import twitchEmitter from "./twitchEmitter.mjs";
 import "./wsServer.mjs";
 
 async function fetchToken(config = {}, tokensDir = './tokens.json'){
@@ -55,6 +56,13 @@ const chatClient = new ChatClient({ authProvider, channels:config.twitch_auth.ch
 chatClient.onMessage(twitchMsg);
 chatClient.connect();
 
+twitchEmitter.on('clientmsg', (channel, text, replyTo)=>{
+    chatClient.say(channel, text, replyTo).then(
+        e=>console.log('client:', channel, text, replyTo), 
+        e=>console.error('Failed to send client message -_-', e)
+    );
+})
+
 // EventSub
 // Channel points
 const targetChannel = await apiClient.users.getUserByName(config.twitch_auth.channels[0]);
@@ -63,7 +71,7 @@ const evtSub = new EventSubWsListener({ apiClient });
 
 // Load the listeners for EventSub:
 for(var key in evtSubList)
-    evtSub["on"+key](targetChannel.id, evtSubList[key]);
+    evtSub["on"+(evtSubList[key].apiName)](targetChannel.id, evtSubList[key].func);
 
 evtSub.start();
 

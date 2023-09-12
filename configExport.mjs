@@ -1,7 +1,13 @@
 // Until the module standard for json is here, I'm going to make this a module so that the general object is able to be exported.
 // It's never written to, so we just need to read it
+import { readFile } from "fs/promises";
 
-const config = JSON.parse((await (await import("fs/promises")).readFile("./config.json")).toString());
-Object.freeze(config);
+const readJson = async str=>JSON.parse((await (await readFile(str))).toString())
 
-export default config;
+const twitchConfig = await readJson("./configs/twitch.json");
+Object.freeze(twitchConfig);
+
+const listenerConfig = await readJson('./configs/listeners.json');
+Object.freeze(listenerConfig);
+
+export { twitchConfig, listenerConfig };
