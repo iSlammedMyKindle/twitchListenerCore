@@ -38,10 +38,11 @@ var tokenData = await fetchToken(config);
 const authProvider = new RefreshingAuthProvider({
     clientId: config.twitch_auth.client_id,
     clientSecret: config.twitch_auth.client_secret,
-    onRefresh: async (userId, newTokenData)=>{
-        tokenData = newTokenData;
-        return await writeFile('./tokens.json', JSON.stringify(newTokenData), 'utf-8');
-    }
+});
+
+authProvider.onRefresh(async (userId, newTokenData)=>{
+    tokenData = newTokenData;
+    return await writeFile('./tokens.json', JSON.stringify(newTokenData), 'utf-8');
 });
 
 //One refreshing auth provider should give us the client for everything
