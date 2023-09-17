@@ -26,4 +26,4 @@ This model can allow for other services besides twitch to use the core. The mock
 
 Run `node` and inside the interactive terminal, run `{evtSubList, twitchMsg} = await import('./tests/mockServer.mjs')`, you'll then be able to run the event functions directly and send events to clients of the mock
 
-`evtSubList.redeem.func('sample redeem', 250,'islammedmykindle,', 'iSlammedMyKindle')`
+`evtSubList.redeem.func({ rewardTitle: 'sample redeem', rewardCost: 250, userName: 'islammedmykindle,', userDisplayName: 'iSlammedMyKindle'})`
