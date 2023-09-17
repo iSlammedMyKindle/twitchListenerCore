@@ -12,7 +12,8 @@ for(const listener in listenerConfig){
     let paramDestruct = listenerConfig[listener].params.toString();
 
     evtSubList[listener] = {
-        apiName: listenerConfig[listener].apiName, 
+        apiName: listenerConfig[listener].apiName,
+        modParam: listenerConfig[listener].modParam,
         func: Function('emitter', `return ({${paramDestruct}})=>{
             console.log("==${listener}==", ${paramDestruct});
             emitter.emit('${listener}',{${paramDestruct}, event:"${listener}"});

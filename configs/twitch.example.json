@@ -2,7 +2,7 @@
     "twitch_auth":{
         "client_id" : "",
         "client_secret":"",
-        "scope": "chat:read chat:edit channel:read:redemptions bits:read",
+        "scope": "chat:read chat:edit channel:read:redemptions channel:read:subscriptions bits:read moderator:read:followers",
         "redirect_uri":"http://localhost:3000",
         "channels":[""]
     },

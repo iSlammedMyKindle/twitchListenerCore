@@ -13,7 +13,7 @@ import { twitchConfig as config } from "./configExport.mjs";
 const connections = new Map();
 
 // TODO: get rid of this and replace it with the list of listeners from the config to make this dynamic
-const listeners = ['message', 'redeem', 'cheer'];
+const listeners = ['message', 'redeem', 'cheer', 'follow', 'sub'];
 const eventSend = (evtObj, targetWs)=>targetWs.send(JSON.stringify(evtObj));
 
 const clientMsg = (ws, m)=>{

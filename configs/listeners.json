@@ -1,4 +1,6 @@
 {
     "redeem": { "apiName":"ChannelRedemptionAdd", "params":["rewardTitle", "rewardCost", "userName", "userDisplayName"] },
-    "cheer": { "apiName":"ChannelCheer", "params":["bits", "userName", "userDisplayName", "broadcasterName", "message"] }
+    "cheer": { "apiName":"ChannelCheer", "params":["bits", "userName", "userDisplayName", "broadcasterName", "message"] },
+    "follow": { "apiName":"ChannelFollow", "modParam": true, "params":["userName", "userDisplayName", "broadcasterName"] },
+    "sub": { "apiName":"ChannelSubscription", "params":["userName", "userDisplayName", "isGift", "tier"] }
 }

@@ -72,7 +72,7 @@ const evtSub = new EventSubWsListener({ apiClient });
 
 // Load the listeners for EventSub:
 for(var key in evtSubList)
-    evtSub["on"+(evtSubList[key].apiName)](targetChannel.id, evtSubList[key].func);
+    evtSub["on"+(evtSubList[key].apiName)](targetChannel.id, ...(evtSubList[key].modParam ? [targetChannel.id, evtSubList[key].func] : [evtSubList[key].func]));
 
 evtSub.start();
 
