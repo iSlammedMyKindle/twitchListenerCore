@@ -71,8 +71,15 @@ const targetChannel = await apiClient.users.getUserByName(config.twitch_auth.cha
 const evtSub = new EventSubWsListener({ apiClient });
 
 // Load the listeners for EventSub:
-for(var key in evtSubList)
-    evtSub["on"+(evtSubList[key].apiName)](targetChannel.id, ...(evtSubList[key].modParam ? [targetChannel.id, evtSubList[key].func] : [evtSubList[key].func]));
+for(var key in evtSubList){
+    /* The original way to do this was just inserting `evtSubList[key].func` into `targetListener`
+    The problem with it though is that for some reason either node or twurple thought this was the same function everytime
+    The duck-tape solution for this is to bind the function instead so that it is completely new and has a different section
+    in memory for distinction purposes */
+    let targetListener = evtSubList[key].func.bind();
+
+    evtSub["on"+(evtSubList[key].apiName)](targetChannel.id, ...(evtSubList[key].modParam ? [targetChannel.id, targetListener] : [targetListener]));
+}
 
 evtSub.start();
 
