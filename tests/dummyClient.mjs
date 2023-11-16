@@ -11,6 +11,7 @@ wsClient.on('message', buffer=>{
     console.log(yes);
 });
 
-const sendText = (text, replyTo)=>wsClient.send(JSON.stringify({action:"message", text, replyTo}))
+const sendText = (text, replyTo)=>wsClient.send(JSON.stringify({action:"message", text, replyTo}));
+const ping = ()=>wsClient.send(JSON.stringify({ action:'ping' }));
 
-export { sendText };
+export { sendText, ping };
