@@ -51,7 +51,7 @@ const clientMsg = (ws, m)=>{
             console.log(config.twitch_auth.channels[0] + ":", resJson.text);
         }
         else if(resJson.action == 'ping'){
-            ws.send(JSON.stringify({ action: 'pong' }));
+            ws.send(JSON.stringify({ event: 'pong' }));
         }
     }
 }
