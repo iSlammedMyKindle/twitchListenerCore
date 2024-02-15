@@ -50,6 +50,14 @@ const clientMsg = (ws, m)=>{
 
             console.log(config.twitch_auth.channels[0] + ":", resJson.text);
         }
+        else if(resJson.action == 'ping'){
+            const pingDate = new Date();
+            console.log(
+                pingDate.getHours() + ':' + pingDate.getMinutes() + ':' + pingDate.getSeconds(),
+                '[ping]','[sending pong]'
+            );
+            ws.send(JSON.stringify({ event: 'pong' }));
+        }
     }
 }
 
