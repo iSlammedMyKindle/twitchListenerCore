@@ -1,10 +1,11 @@
 {
   "dependencies": {
-    "@twurple/api": "^7.0.0",
-    "@twurple/auth": "^7.0.0",
-    "@twurple/chat": "^7.0.0",
-    "@twurple/eventsub-ws": "7.0.1",
+    "@twurple/api": "^7.0.8",
+    "@twurple/auth": "^7.0.8",
+    "@twurple/chat": "^7.0.8",
+    "@twurple/eventsub-ws": "7.0.8",
     "kindle-twitch-oauth": "^1.2.0",
+    "otp": "^1.1.2",
     "ws": "^8.13.0"
   }
 }

@@ -7,5 +7,6 @@
         "channels":[""]
     },
     "https":{ "use_https": false },
-    "ws":{ "port":9001 }
+    "ws":{ "port":9001 },
+    "otp": null
 }
