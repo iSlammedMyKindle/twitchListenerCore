@@ -1,12 +1,22 @@
 {
-    "twitch_auth":{
-        "client_id" : "",
-        "client_secret":"",
+    "twitch_auth": {
+        "client_id": "",
+        "client_secret": "",
         "scope": "chat:read chat:edit channel:read:redemptions channel:read:subscriptions bits:read moderator:read:followers",
-        "redirect_uri":"http://localhost:3000",
-        "channels":[""]
+        "redirect_uri": "http://localhost:3000",
+        "channels": [
+            ""
+        ]
     },
-    "https":{ "use_https": false },
-    "ws":{ "port":9001 },
+    "https": {
+        "use_https": false,
+        "certpath": "./sslCertificate/cert.pem",
+        "keypath": "./sslCertificate/key.pem",
+        "passphrase": "1234"
+    },
+    "ws": {
+        "port": 9001,
+        "use_wss": true
+    },
     "otp": null
 }

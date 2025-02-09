@@ -6,6 +6,6 @@
     "@twurple/eventsub-ws": "7.0.8",
     "kindle-twitch-oauth": "^1.2.0",
     "otp": "^1.1.2",
-    "ws": "^8.13.0"
+    "ws": "^8.18.0"
   }
 }

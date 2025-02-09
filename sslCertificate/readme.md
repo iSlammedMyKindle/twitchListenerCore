@@ -1,0 +1,2 @@
+self sign your certificate here: https://sectigo.com/resource-library/what-is-a-self-signed-certificate
+https://stackoverflow.com/questions/10175812/how-to-generate-a-self-signed-ssl-certificate-using-openssl#10176685
