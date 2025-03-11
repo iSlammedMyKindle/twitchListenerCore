@@ -4,10 +4,10 @@ import { readFile } from "fs/promises";
 
 const readJson = async str=>JSON.parse((await (await readFile(str))).toString())
 
-const twitchConfig = await readJson("./configs/twitch.json");
+const twitchConfig = await readJson(import.meta.dirname + "/configs/twitch.json");
 Object.freeze(twitchConfig);
 
-const listenerConfig = await readJson('./configs/listeners.json');
+const listenerConfig = await readJson(import.meta.dirname + '/configs/listeners.json');
 Object.freeze(listenerConfig);
 
 export { twitchConfig, listenerConfig };

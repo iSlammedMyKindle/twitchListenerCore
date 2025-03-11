@@ -1,4 +1,6 @@
 {
+  "name":"twitch-listener-core",
+  "version":"2.2.0",
   "dependencies": {
     "@twurple/api": "^7.0.8",
     "@twurple/auth": "^7.0.8",
