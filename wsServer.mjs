@@ -3,6 +3,7 @@ import twitchEmitter from "./twitchEmitter.mjs";
 import { twitchConfig as config } from "./configExport.mjs";
 import { createServer } from "https";
 import { readFile } from "fs/promises";
+import path from "path";
 
 /*Client connections - store these here to remove listeners that arne't required anymore upon disconnect
 {
@@ -87,8 +88,8 @@ if (config.ws.use_wss) {
     // When enabled, it uses the https settings from the config and assumes it exists
     // Establish a WSS connection based on example code: https://www.npmjs.com/package/ws#external-https-server
     const server = createServer({
-        cert: await readFile(config.https.certpath),
-        key: await readFile(config.https.keypath),
+        cert: await readFile(path.resolve(import.meta.dirname + '/' + config.https.certpath)),
+        key: await readFile(path.resolve(import.meta.dirname + '/' + config.https.keypath)),
         passphrase: config.https.passphrase || ''
     });
 
