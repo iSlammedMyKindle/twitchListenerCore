@@ -3,6 +3,7 @@ import twitchEmitter from "./twitchEmitter.mjs";
 import { twitchConfig as config } from "./configExport.mjs";
 import { createServer } from "https";
 import { readFile } from "fs/promises";
+import notify from "systemd-notify";
 import path from "path";
 
 /*Client connections - store these here to remove listeners that arne't required anymore upon disconnect
@@ -59,10 +60,10 @@ const clientMsg = (ws, m) => {
       const pingDate = new Date();
       console.log(
         pingDate.getHours() +
-          ":" +
-          pingDate.getMinutes() +
-          ":" +
-          pingDate.getSeconds(),
+        ":" +
+        pingDate.getMinutes() +
+        ":" +
+        pingDate.getSeconds(),
         "[ping]",
         "[sending pong]",
       );
@@ -108,11 +109,31 @@ if (config.ws.use_wss) {
   server.listen(config.ws?.port || 9001);
 
   new WebSocketServer({ server }).on("connection", newConnection);
+  await triggerSystemdNotify();
 }
 
 // At this point there shouldn't be a reason not to use WSS other than avoiding self-signing a certificate or just using let's encrypt, for legacy purposes this remains
-else
+else {
   new WebSocketServer({ port: config.ws?.port || 9001 }).on(
     "connection",
     newConnection,
   );
+
+  await triggerSystemdNotify();
+}
+
+// Configure the service launching this so that it can notify anything else that might depend on it
+async function triggerSystemdNotify() {
+  let success = false;
+  try {
+    await notify({ ready: true });
+    success = true;
+  } catch (e) {
+    console.warn(
+      "(Not attached to the service, starting without systemd notify)",
+      e,
+    );
+  }
+
+  return success
+}

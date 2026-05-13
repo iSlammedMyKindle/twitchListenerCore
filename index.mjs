@@ -12,7 +12,6 @@ import { readFile, writeFile, access } from "fs/promises";
 import { twitchConfig as config, twitchConfig } from "./configExport.mjs";
 import twitchEmitter from "./twitchEmitter.mjs";
 import { createServer } from "http";
-import notify from "systemd-notify";
 import otp from "otp";
 import "./wsServer.mjs";
 
@@ -106,15 +105,6 @@ async function init(newToken = false) {
   }
 
   evtSub.start();
-  // Configure the service launching this so that it can notify anything else that might depend on it
-  try {
-    await notify({ ready: true });
-  } catch (e) {
-    console.warn(
-      "(Not attached to the service, starting without systemd notify)",
-      e,
-    );
-  }
   console.log("Everything connected!");
 }
 
