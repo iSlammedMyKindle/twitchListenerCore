@@ -21,7 +21,7 @@ If you want to add more listeners, they can be created in `./configs/listeners.j
 If twitchListenerCore dies (it no longer listens to twitch), you can reboot it using an OTP 6-digit key. This allows all clients to remain connected while re-connecting to twitch. To make a 6-digit key, run `node` in the console and execute the following:
 
 ```js
-require('otp').parse();
+require("otp").parse();
 ```
 
 it will give you a `secret`, e.g `VD7[...]G3SVI=`. Make something like the following in a QR-code to get a 6-digit code in something like authy: `oauth://totp/twitchListenerCore?secret=VD7[...]G3SVI=`

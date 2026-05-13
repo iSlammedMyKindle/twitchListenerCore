@@ -2,3 +2,4 @@ node_modules
 tokens.json
 configs/twitch.json
 sslCertificate
+todo.md

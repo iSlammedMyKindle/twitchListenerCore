@@ -8,23 +8,32 @@ import { listenerConfig } from "./configExport.mjs";
 const evtSubList = {};
 
 // Create new functions dynamically that make use of the destructure syntax. This way we aren't for-looping for everything that we want to add and performance is quick
-for(const listener in listenerConfig){
-    let paramDestruct = listenerConfig[listener].params.toString();
+for (const listener in listenerConfig) {
+  let paramDestruct = listenerConfig[listener].params.toString();
 
-    evtSubList[listener] = {
-        apiName: listenerConfig[listener].apiName,
-        modParam: listenerConfig[listener].modParam,
-        func: Function('emitter', `return ({${paramDestruct}})=>{
+  evtSubList[listener] = {
+    apiName: listenerConfig[listener].apiName,
+    modParam: listenerConfig[listener].modParam,
+    func: Function(
+      "emitter",
+      `return ({${paramDestruct}})=>{
             console.log("==${listener}==", ${paramDestruct});
             emitter.emit('${listener}',{${paramDestruct}, event:"${listener}"});
-        }`)(twitchEmitter)
-    };
+        }`,
+    )(twitchEmitter),
+  };
 }
 
 // Due to the msg.id thing, we can't really make this a dynamic one.
-const twitchMsg = (channel, user, text, msg)=>{
-    console.log('==message==', channel, user, text);
-    twitchEmitter.emit('message', { channel, user, text, id:msg.id, event: 'message' });
-}
+const twitchMsg = (channel, user, text, msg) => {
+  console.log("==message==", channel, user, text);
+  twitchEmitter.emit("message", {
+    channel,
+    user,
+    text,
+    id: msg.id,
+    event: "message",
+  });
+};
 
-export {evtSubList, twitchMsg}
+export { evtSubList, twitchMsg };

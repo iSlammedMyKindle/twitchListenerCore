@@ -8,5 +8,5 @@ usage:
 * run node at the root of the project folder
 * {evtSubList, twitchMsg} = await import("./tests/mock.mjs");*/
 
-import "../wsServer.mjs"
-export {evtSubList, twitchMsg} from "../listeners.mjs";
+import "../wsServer.mjs";
+export { evtSubList, twitchMsg } from "../listeners.mjs";

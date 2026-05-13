@@ -8,16 +8,17 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 // To only test http, remove the extra "s" in wss
 const wsClient = new WebSocket("wss://localhost:9001");
 
-wsClient.on('open', () => {
-    wsClient.send(JSON.stringify(['message', 'redeem', 'chicken salad']));
+wsClient.on("open", () => {
+  wsClient.send(JSON.stringify(["message", "redeem", "chicken salad"]));
 });
 
-wsClient.on('message', buffer => {
-    const yes = buffer.toString();
-    console.log(yes);
+wsClient.on("message", (buffer) => {
+  const yes = buffer.toString();
+  console.log(yes);
 });
 
-const sendText = (text, replyTo) => wsClient.send(JSON.stringify({ action: "message", text, replyTo }));
-const ping = () => wsClient.send(JSON.stringify({ action: 'ping' }));
+const sendText = (text, replyTo) =>
+  wsClient.send(JSON.stringify({ action: "message", text, replyTo }));
+const ping = () => wsClient.send(JSON.stringify({ action: "ping" }));
 
 export { sendText, ping };

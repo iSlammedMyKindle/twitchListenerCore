@@ -1,6 +1,9 @@
 {
-  "name":"twitch-listener-core",
-  "version":"2.2.1",
+  "name": "twitch-listener-core",
+  "version": "2.2.1",
+  "scripts": {
+    "format": "prettier . --write"
+  },
   "dependencies": {
     "@twurple/api": "^7.4.0",
     "@twurple/auth": "^7.4.0",
@@ -8,6 +11,7 @@
     "@twurple/eventsub-ws": "7.4.0",
     "kindle-twitch-oauth": "^1.2.0",
     "otp": "^1.1.2",
+    "systemd-notify": "^1.0.0",
     "ws": "^8.18.3"
   }
 }
