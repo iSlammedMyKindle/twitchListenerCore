@@ -135,5 +135,5 @@ async function triggerSystemdNotify() {
     );
   }
 
-  return success
+  return success;
 }
