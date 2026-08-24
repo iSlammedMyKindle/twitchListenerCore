@@ -26,11 +26,25 @@ for (const listener in listenerConfig) {
 
 // Due to the msg.id thing, we can't really make this a dynamic one.
 const twitchMsg = (channel, user, text, msg) => {
+
   console.log("==message==", channel, user, text);
+
+  // Since emoji are being sent via map, the raw data needs to be translated back into a JSON object to transmit over WSS
+  const emoteOffsets = [...msg.emoteOffsets.entries()].reduce((acc, value) => {
+    // [ 'emotesv2_c032d7d60b3e41bf8b5582fb43c5bb37', [ '0-10', '18-28' ] ]
+    acc[value[0]] = value[1];
+
+    return acc;
+  }, {});
+
+  if (Object.keys(emoteOffsets).length)
+    console.log("==emoteOffsets==", emoteOffsets);
+
   twitchEmitter.emit("message", {
     channel,
     user,
     text,
+    emoteOffsets,
     id: msg.id,
     event: "message",
   });
